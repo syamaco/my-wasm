@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>WebAssembly Demo</title>
+    </head>
+    <body>
+        <h1>Hello, WebAssembly!</h1>
+        <code>
+            <ul>
+                <li>2 + 3 = <span id="add">?</span></li>
+                <li>2 x 3 = <span id="mul">?</span></li>
+            </ul>
+        </code>
+    </body>
+    <script>
+     async function wasmInstance() {
+         let res = await fetch("main.wasm")
+         let buf = await res.arrayBuffer()
+         return await WebAssembly.instantiate(buf, {})
+     }
+     wasmInstance().then(res => {
+         let { addTwo, mulTwo } = res.instance.exports
+         document.querySelector('#add').innerText = addTwo(2, 3)
+         document.querySelector('#mul').innerText = mulTwo(2, 3)
+     })
+    </script>
+</html>
